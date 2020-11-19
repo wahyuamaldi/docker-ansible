@@ -1,1 +1,28 @@
-
+- host: server
+  vars:
+    - image: wahyuamaldi/apache.docker.ansible
+  task:
+    - name: install python docker di ubuntu
+      apt:
+        name:
+          - python3
+          - python3-docker
+        state: present
+     when: ansible_distribution == "Ubuntu"
+    - name: install python docker di centos
+      yum:
+        name: python-docker
+        state: present
+     when: ansible_distribution == "CentOS"
+   - name: pull image docker
+    docker_image:
+      name: "{{ name }}"
+      state: present
+      force: yes
+    docker_container:
+      name: docker-ansible
+      image: "{{ image }}"
+      state: started
+      published_ports:
+        - 10000:80
+       recreate: yes
